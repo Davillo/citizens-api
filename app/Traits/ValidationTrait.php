@@ -39,7 +39,7 @@ trait ValidationTrait
     function validateBrZipCode($zipCode){
         $zipCode = trim($zipCode);
 
-        $validated = preg_match("'/[0-9]{5,5}([-]?[0-9]{3})?$/", $zipCode);
+        $validated = preg_match('/[0-9]{5,5}([-]?[0-9]{3})?$/', $zipCode);
 
         if($validated){
             return true;

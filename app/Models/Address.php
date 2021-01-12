@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\MasksUtil;
 use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
@@ -31,4 +32,8 @@ class Address extends Model
     protected $hidden = [
 
     ];
+
+    function setZipCodeAttribute($value){
+        $this->attributes['zip_code'] = MasksUtil::unmask($value);
+    }
 }

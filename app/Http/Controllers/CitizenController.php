@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCitizenRequest;
 use App\Repositories\CitizenRepository;
 use App\Services\ViaCepService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -44,6 +45,22 @@ class CitizenController extends Controller
 
     public function store(StoreCitizenRequest $request){
         $data = $request->validated();
+
+        try {
+            $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
+
+            $citizen = $this->citizenRepository->store($data);
+            $citizen->address()->create([
+                'street' => $addressData->logradouro,
+                'neighborhood' => $addressData->bairro,
+                'zip_code' => $addressData->cep,
+                'city' => $addressData->localidade,
+                'federative_unit' => $addressData->uf,
+            ]);
+            return response()->json($citizen);
+        } catch (QueryException $exception) {
+            return response()->json([$exception->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function update(int $id){

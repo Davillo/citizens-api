@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Citizen extends Model
 {
 
+    protected $table = 'citizens';
+
+    protected $appends = ['address'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,4 +32,12 @@ class Citizen extends Model
     protected $hidden = [
 
     ];
+
+    public function address(){
+        return $this->hasOne(Address::class, 'citizen_id');
+    }
+
+    public function getAddressAttribute(){
+        return $this->address()->first();
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils;
+namespace App\Traits;
 
 trait ValidationTrait
 {
@@ -34,6 +34,18 @@ trait ValidationTrait
         }
 
         return true;
+    }
+
+    function validateBrZipCode($zipCode){
+        $zipCode = trim($zipCode);
+
+        $validated = preg_match("'/[0-9]{5,5}([-]?[0-9]{3})?$/", $zipCode);
+
+        if($validated){
+            return true;
+        }
+
+        return false;
     }
 
 }

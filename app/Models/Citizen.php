@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\MasksUtil;
 use Illuminate\Database\Eloquent\Model;
 
 class Citizen extends Model
@@ -39,5 +40,13 @@ class Citizen extends Model
 
     public function getAddressAttribute(){
         return $this->address()->first();
+    }
+
+    public function setNationalRegistry($value){
+        $this->attributes['national_registry'] = MasksUtil::unmask($value);
+    }
+
+    public function getNationalRegistry($value){
+        return MasksUtil::mask($value, '###.###.###-##');
     }
 }

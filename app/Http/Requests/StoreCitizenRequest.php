@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\BrZipCodeRule;
+use App\Rules\NationalRegistryRule;
 use Pearl\RequestValidate\RequestAbstract;
 
 class StoreCitizenRequest extends RequestAbstract
@@ -26,7 +28,12 @@ class StoreCitizenRequest extends RequestAbstract
         return [
             'name' => 'string|required',
             'last_name' => 'string|required',
-            'national_registry' => ['string|required|unique:citizens,national_registry', new NationalRegistryRule($this->request->get('national_registry'))]
+            'national_registry' => ['string|required|unique:citizens,national_registry', new NationalRegistryRule],
+            'zip_code' => ['required|string', new BrZipCodeRule],
+            // 'street' => '',
+            // 'city' => '',
+            // 'neighborhood' => '',
+            // 'federative_unit' => ''
         ];
     }
 

@@ -5,17 +5,17 @@ namespace App\Rules;
 use App\Traits\ValidationTrait;
 use Illuminate\Contracts\Validation\Rule;
 
-class NationalRegistryRule implements Rule
+class BrZipCodeRule implements Rule
 {
     use ValidationTrait;
 
     public function passes($attribute, $value)
     {
-        return $this->nationalRegistryValidation($value);
+        return $this->validateBrZipCode($value);
     }
 
     public function message()
     {
-        return "CPF inválido";
+        return "CEP inválido";
     }
 }

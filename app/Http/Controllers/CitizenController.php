@@ -2,23 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCitizenRequest;
 use App\Repositories\CitizenRepository;
+use App\Services\ViaCepService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CitizenController extends Controller
 {
 
+    /**
+     * CitizenRepository
+    */
     private $citizenRepository;
+
+    /**
+     * ViaCepService
+    */
+    private $viaCepService;
 
     /**
      * Create a new controller instance.
      *
      * @return void
     */
-    public function __construct(CitizenRepository $citizenRepository)
+    public function __construct(CitizenRepository $citizenRepository, ViaCepService $viaCepService)
     {
         $this->citizenRepository = $citizenRepository;
+        $this->viaCepService = $viaCepService;
     }
 
     public function index(){
@@ -31,8 +42,8 @@ class CitizenController extends Controller
         return response()->json(['data' => $citizen]);
     }
 
-    public function store(){
-
+    public function store(StoreCitizenRequest $request){
+        $data = $request->validated();
     }
 
     public function update(int $id){

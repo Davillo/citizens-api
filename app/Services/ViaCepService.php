@@ -20,6 +20,11 @@ class ViaCepService {
         $zipCode = MasksUtil::unmask($zipCode);
         $url = "$this->baseUrl/{$zipCode}/json";
         $data = $this->jsonRequest('GET', $url);
+
+        if(property_exists($data, 'error')){
+            return null;
+        }
+
         return $data;
     }
 }

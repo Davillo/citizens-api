@@ -30,7 +30,7 @@ class Address extends Model
      * @var array
      */
     protected $hidden = [
-
+        'citizen_id'
     ];
 
     function setZipCodeAttribute($value){

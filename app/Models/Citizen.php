@@ -42,11 +42,11 @@ class Citizen extends Model
         return $this->address()->first();
     }
 
-    public function setNationalRegistry($value){
+    public function setNationalRegistryAttribute($value){
         $this->attributes['national_registry'] = MasksUtil::unmask($value);
     }
 
-    public function getNationalRegistry($value){
+    public function getNationalRegistryAttribute($value){
         return MasksUtil::mask($value, '###.###.###-##');
     }
 }

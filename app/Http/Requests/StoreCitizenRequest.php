@@ -28,7 +28,7 @@ class StoreCitizenRequest extends RequestAbstract
         return [
             'name' => 'string|required',
             'last_name' => 'string|required',
-            'national_registry' => ['required','unique:citizens,national_registry', new NationalRegistryRule],
+            'national_registry' => ['required', 'string', new NationalRegistryRule],
             'zip_code' => ['required', 'string', new BrZipCodeRule],
             // 'street' => '',
             // 'city' => '',

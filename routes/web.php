@@ -4,15 +4,15 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
+| API ROUTES
+|-------------------------------------------------------------------------
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->group(['prefix' => '/citizens'], function () use ($router) {
+    $router->get('/', 'CitizenController@index');
+    $router->post('/', 'CitizenController@store');
+    $router->get('/{id:[0-9]+}', 'CitizenController@show');
+    $router->put('/{id:[0-9]+}', 'CitizenController@update');
+    $router->delete('/{id:[0-9]+}', 'CitizenController@destroy');
 });

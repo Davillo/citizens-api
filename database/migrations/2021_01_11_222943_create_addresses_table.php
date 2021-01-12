@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateAddressesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('street', 200);
+            $table->string('neighborhood', 80);
+            $table->string('zip_code', 8);
+            $table->string('city', 100);
+            $table->string('federative_unit', 2);
+
+            $table->unsignedBigInteger('citizen_id');
+            $table->foreign('citizen_id')->references('id')->on('citizens')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('addresses');
+    }
+}

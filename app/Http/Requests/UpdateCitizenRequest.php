@@ -28,7 +28,7 @@ class UpdateCitizenRequest extends RequestAbstract
         return [
             'name' => 'string|nullable',
             'last_name' => 'string|nullable',
-            'national_registry' => ['nullable', 'string', new NationalRegistryRule],
+            // 'national_registry' => ['nullable', 'string', new NationalRegistryRule],
             'zip_code' => ['nullable', 'string', new BrZipCodeRule],
         ];
     }

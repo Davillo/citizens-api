@@ -80,19 +80,22 @@ class CitizenController extends Controller
         $citizen = $this->citizenRepository->getById($id);
         $citizen->update($data);
 
-        $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
+        if($data['zip_code']){
+            $data['zip_code'] = MasksUtil::unmask($data['zip_code']);
+            $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
 
-        if(!$addressData){
-            return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
+            if(!$addressData){
+                return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $citizen->address()->update([
+                'street' => $addressData->logradouro,
+                'neighborhood' => $addressData->bairro,
+                'zip_code' => MasksUtil::unmask($addressData->cep),
+                'city' => $addressData->localidade,
+                'federative_unit' => $addressData->uf
+            ]);
         }
-
-        $citizen->address()->update([
-            'street' => $addressData->logradouro,
-            'neighborhood' => $addressData->bairro,
-            'zip_code' => $addressData->cep,
-            'city' => $addressData->localidade,
-            'federative_unit' => $addressData->uf
-        ]);
 
         return response()->json(['data' => $citizen], Response::HTTP_OK);
     }

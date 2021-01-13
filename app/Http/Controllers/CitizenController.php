@@ -10,6 +10,7 @@ use App\Utils\MasksUtil;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 
 class CitizenController extends Controller
 {
@@ -51,18 +52,20 @@ class CitizenController extends Controller
     public function store(StoreCitizenRequest $request)
     {
         $data = $request->validated();
+        $citizenData = Arr::only($data, ['name', 'last_name', 'national_registry', 'email', 'celphone']);
+        $zipCode = $data['zip_code'];
 
         if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($data['national_registry']))){
             return response()->json(['message'=> 'Não foi possível completar o cadastro. CPF já cadastrado.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
+        $addressData = $this->viaCepService->fetchZipCodeData($zipCode);
 
         if(!$addressData){
             return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $citizen = $this->citizenRepository->store($data);
+        $citizen = $this->citizenRepository->store($citizenData);
         $citizen->address()->create([
             'street' => $addressData->logradouro,
             'neighborhood' => $addressData->bairro,
@@ -78,6 +81,8 @@ class CitizenController extends Controller
     {
         $data = $request->validated();
         $citizen = $this->citizenRepository->getById($id);
+        $citizenData = Arr::only($data, ['name', 'last_name', 'national_registry', 'email', 'celphone']);
+
 
         if($citizen->getRawOriginal('national_registry') !== MasksUtil::unmask($request->national_registry)){
             if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($data['national_registry']))){
@@ -85,9 +90,8 @@ class CitizenController extends Controller
             }
         }
 
-        $citizen->update($data);
+        $citizen->update($citizenData);
 
-        $data['zip_code'] = MasksUtil::unmask($data['zip_code']);
         $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
 
         if(!$addressData){

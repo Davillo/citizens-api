@@ -6,7 +6,7 @@ use App\Rules\BrZipCodeRule;
 use App\Rules\NationalRegistryRule;
 use Pearl\RequestValidate\RequestAbstract;
 
-class StoreCitizenRequest extends RequestAbstract
+class UpdateCitizenRequest extends RequestAbstract
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,10 +26,10 @@ class StoreCitizenRequest extends RequestAbstract
     public function rules(): array
     {
         return [
-            'name' => 'string|required',
-            'last_name' => 'string|required',
-            'national_registry' => ['required', 'string', new NationalRegistryRule],
-            'zip_code' => ['required', 'string', new BrZipCodeRule],
+            'name' => 'string|nullable',
+            'last_name' => 'string|nullable',
+            'national_registry' => ['nullable', 'string', new NationalRegistryRule],
+            'zip_code' => ['nullable', 'string', new BrZipCodeRule],
         ];
     }
 
@@ -41,10 +41,7 @@ class StoreCitizenRequest extends RequestAbstract
     public function messages(): array
     {
         return [
-            'name.required' => 'O nome é obrigatório',
-            'last_name.required' => 'O sobrenome é obrigatório',
-            'national_registry.required' => 'O CPF é obrigatório',
-            'zip_code.required' => 'O CEP é obrigatório',
+            //
         ];
     }
 }

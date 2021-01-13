@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCitizenRequest;
+use App\Http\Requests\UpdateCitizenRequest;
 use App\Repositories\CitizenRepository;
 use App\Services\ViaCepService;
 use App\Utils\MasksUtil;
@@ -34,17 +35,21 @@ class CitizenController extends Controller
         $this->viaCepService = $viaCepService;
     }
 
-    public function index(){
-        $citizens = $this->citizenRepository->findAll();
+    public function index(Request $request)
+    {
+        $nationalRegistry = MasksUtil::unmask($request->query('national_registry')) ?? '';
+        $citizens = $this->citizenRepository->findAll($nationalRegistry);
         return response()->json($citizens);
     }
 
-    public function show(int $id){
+    public function show(int $id)
+    {
         $citizen = $this->citizenRepository->getById($id);
         return response()->json(['data' => $citizen]);
     }
 
-    public function store(StoreCitizenRequest $request){
+    public function store(StoreCitizenRequest $request)
+    {
         $data = $request->validated();
 
         if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($data['national_registry']))){
@@ -69,11 +74,31 @@ class CitizenController extends Controller
         return response()->json(['data' => $citizen], Response::HTTP_CREATED);
     }
 
-    public function update(int $id){
+    public function update(int $id, UpdateCitizenRequest $request)
+    {
+        $data = $request->validated();
+        $citizen = $this->citizenRepository->getById($id);
+        $citizen->update($data);
 
+        $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
+
+        if(!$addressData){
+            return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $citizen->address()->update([
+            'street' => $addressData->logradouro,
+            'neighborhood' => $addressData->bairro,
+            'zip_code' => $addressData->cep,
+            'city' => $addressData->localidade,
+            'federative_unit' => $addressData->uf
+        ]);
+
+        return response()->json(['data' => $citizen], Response::HTTP_OK);
     }
 
-    public function destroy(int $id){
+    public function destroy(int $id)
+    {
         $this->citizenRepository->destroy($id);
         return response()->json([], Response::HTTP_NO_CONTENT);
     }

@@ -21,7 +21,7 @@ class ViaCepService {
         $url = "$this->baseUrl/{$zipCode}/json";
         $data = $this->jsonRequest('GET', $url);
 
-        if(property_exists($data, 'error')){
+        if(property_exists($data, 'erro')){
             return null;
         }
 

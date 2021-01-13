@@ -13,11 +13,21 @@ class CitizenRepository extends BaseRepository
         parent::__construct($citizen ?? new Citizen());
     }
 
-    function findAll(){
-        return $this->model->orderBy('name')->paginate(20);
+    function findAll(string $nationalRegistry)
+    {
+        $citizens = $this->model->when($nationalRegistry != '',
+        function($query)  use ($nationalRegistry){
+            return $query->where('national_registry', $nationalRegistry);
+        },
+        function($query){
+            return $query;
+        });
+
+        return $citizens->orderBy('name')->paginate(20);
     }
 
-    function checkNationalRegistry(string $nationalRegistry){
+    function checkNationalRegistry(string $nationalRegistry): bool
+    {
         return !!$this->model->where('national_registry', $nationalRegistry)->first();
     }
 }

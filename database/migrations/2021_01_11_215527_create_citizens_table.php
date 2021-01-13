@@ -17,7 +17,9 @@ class CreateCitizensTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 120);
             $table->string('last_name', 80);
-            $table->string('national_registry', 14)->unique();
+            $table->string('national_registry', 11)->unique();
+            $table->string('email', 120);
+            $table->string('celphone', 11);
             $table->timestamps();
         });
     }

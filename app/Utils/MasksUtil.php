@@ -4,7 +4,8 @@ namespace App\Utils;
 
 class MasksUtil {
 
-    static function mask(string $value, string $mask){
+    static function mask(string $value, string $mask) : string
+    {
         $maskared = '';
         $k = 0;
         for($i = 0; $i<=strlen($mask)-1; $i++){ if($mask[$i] == '#') { if(isset($value[$k]))
@@ -18,9 +19,13 @@ class MasksUtil {
      return $maskared;
     }
 
-    static function unmask(string $value){
+    static function unmask(string $value) : string
+    {
         $value = trim($value);
         $value = str_replace(".", "", $value);
+        $value = str_replace(" ", "", $value);
+        $value = str_replace("(", "", $value);
+        $value = str_replace(")", "", $value);
         $value = str_replace(",", "", $value);
         $value = str_replace("-", "", $value);
         $value = str_replace("/", "", $value);

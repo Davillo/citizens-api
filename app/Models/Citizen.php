@@ -22,7 +22,7 @@ class Citizen extends Model
         'last_name',
         'national_registry',
         'email',
-        'phone_number'
+        'celphone'
     ];
 
     /**
@@ -48,5 +48,13 @@ class Citizen extends Model
 
     public function getNationalRegistryAttribute($value){
         return MasksUtil::mask($value, '###.###.###-##');
+    }
+
+    public function setCelphoneAttribute($value){
+        $this->attributes['celphone'] = MasksUtil::unmask($value);
+    }
+
+    public function getCelphoneAttribute($value){
+        return MasksUtil::mask($value, '(##) #####-####');
     }
 }

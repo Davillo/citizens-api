@@ -5,17 +5,17 @@ namespace App\Rules;
 use App\Traits\ValidationTrait;
 use Illuminate\Contracts\Validation\Rule;
 
-class BrZipCodeRule implements Rule
+class PhoneRule implements Rule
 {
     use ValidationTrait;
 
     public function passes($attribute, $value)
     {
-        return $this->validateBrZipCode($value);
+        return $this->celphoneValidation($value);
     }
 
     public function message()
     {
-        return "CEP inválido";
+        return "Número de celular inválido";
     }
 }

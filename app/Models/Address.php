@@ -36,4 +36,8 @@ class Address extends Model
     function setZipCodeAttribute($value){
         $this->attributes['zip_code'] = MasksUtil::unmask($value);
     }
+
+    function getZipCodeAttribute($value){
+        return MasksUtil::mask($value, "#####-###");
+    }
 }

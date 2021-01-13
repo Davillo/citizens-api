@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -53,22 +54,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof HttpResponseException) {
-            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($exception instanceof HttpResponseException || $exception instanceof QueryException) {
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         } elseif ($exception instanceof MethodNotAllowedHttpException) {
-            $status = Response::HTTP_METHOD_NOT_ALLOWED;
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_METHOD_NOT_ALLOWED);
         } elseif ($exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException) {
-            $status = Response::HTTP_NOT_FOUND;
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
         } elseif ($exception instanceof AuthorizationException) {
-            $status = Response::HTTP_FORBIDDEN;
-        } elseif ($exception instanceof ValidationException && $exception->getResponse()) {
-            $status = Response::HTTP_BAD_REQUEST;
-        } elseif ($exception) {
-            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
+        }  elseif ($exception instanceof ValidationException) {
+            return response()->json(['message' => $exception->getMessage(), 'errors' => $exception->validator->getMessageBag()], 422);
+        }else{
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json([
-            'message' => $exception->getMessage()
-        ], $status);
     }
 }

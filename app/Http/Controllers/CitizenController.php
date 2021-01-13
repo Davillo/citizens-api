@@ -37,7 +37,7 @@ class CitizenController extends Controller
 
     public function index(Request $request)
     {
-        $nationalRegistry = MasksUtil::unmask($request->query('national_registry')) ?? '';
+        $nationalRegistry = MasksUtil::unmask($request->query('national_registry') ?? "");
         $citizens = $this->citizenRepository->findAll($nationalRegistry);
         return response()->json($citizens);
     }
@@ -53,13 +53,13 @@ class CitizenController extends Controller
         $data = $request->validated();
 
         if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($data['national_registry']))){
-            return response()->json(['message'=> 'Não foi possível completar o cadastro. CPF já cadastrado.'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message'=> 'Não foi possível completar o cadastro. CPF já cadastrado.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
 
         if(!$addressData){
-            return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $citizen = $this->citizenRepository->store($data);
@@ -78,24 +78,29 @@ class CitizenController extends Controller
     {
         $data = $request->validated();
         $citizen = $this->citizenRepository->getById($id);
+
+        if($citizen->getRawOriginal('national_registry') !== MasksUtil::unmask($request->national_registry)){
+            if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($data['national_registry']))){
+                return response()->json(['message'=> 'Não foi possível completar o cadastro. CPF já cadastrado.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
         $citizen->update($data);
 
-        if($data['zip_code']){
-            $data['zip_code'] = MasksUtil::unmask($data['zip_code']);
-            $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
+        $data['zip_code'] = MasksUtil::unmask($data['zip_code']);
+        $addressData = $this->viaCepService->fetchZipCodeData($data['zip_code']);
 
-            if(!$addressData){
-                return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $citizen->address()->update([
-                'street' => $addressData->logradouro,
-                'neighborhood' => $addressData->bairro,
-                'zip_code' => MasksUtil::unmask($addressData->cep),
-                'city' => $addressData->localidade,
-                'federative_unit' => $addressData->uf
-            ]);
+        if(!$addressData){
+            return response()->json(['message'=> 'Não foi possível completar o cadastro. CEP Não encontrado'], Response::HTTP_BAD_REQUEST);
         }
+
+        $citizen->address()->update([
+            'street' => $addressData->logradouro,
+            'neighborhood' => $addressData->bairro,
+            'zip_code' => MasksUtil::unmask($addressData->cep),
+            'city' => $addressData->localidade,
+            'federative_unit' => $addressData->uf
+        ]);
 
         return response()->json(['data' => $citizen], Response::HTTP_OK);
     }

@@ -47,4 +47,16 @@ trait ValidationTrait
         return false;
     }
 
+    function celphoneValidation($celphone){
+        $celphone = trim($celphone);
+
+        $validated = preg_match('/\(?\d{2}\)?\s?\d{5}\-?\d{4}/', $celphone);
+
+        if($validated){
+            return true;
+        }
+
+        return false;
+    }
+
 }

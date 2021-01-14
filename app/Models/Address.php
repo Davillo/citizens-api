@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Utils\MasksUtil;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
 
     protected $table = 'addresses';
+
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.

@@ -57,7 +57,7 @@ class CreateCitizenCommand extends Command
         $citizenData = Arr::only($args, ['name', 'last_name', 'national_registry', 'email', 'celphone']);
 
         if($this->citizenRepository->checkNationalRegistry(MasksUtil::unmask($citizenData['national_registry']))){
-            $this->warn('National registry already taken.');
+            $this->error('National registry already taken.');
             return 1;
         }
 

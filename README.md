@@ -8,9 +8,9 @@ Ferramentas utilizadas
 ## Instalação
 - Clonar o repositório e entrar no diretório do mesmo pelo terminal
 - Rodar o comando "composer install" para baixar todas as dependências do projeto
+- Copiar e colar o conteudo do arquivo .env.example para o .env e configurar um banco de dados MySQL com as credenciais, porta e etc.
 - Rodar o comando "php artisan migrate" para criar as tabelas do banco de dados
 - Importar a documentação contida em no diretório /docs do projeto no Insomnia REST Client
-- Copiar e colar o conteudo do arquivo .env.example para o .env e configurar um banco de dados MySQL com as credenciais, porta e etc.
 
 ## Rotas da API
 - /citizens (GET) - Retorna todos os cidadãos. 

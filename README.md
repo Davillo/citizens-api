@@ -1,24 +1,25 @@
-# Lumen PHP Framework
+#API Cidadãos
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+Ferramentas utilizadas
+- Lumen PHP Micro Framework
+- Insomnia
+- MySQL
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Instalação
+- Clonar o repositório e entrar no diretório do mesmo pelo terminal
+- Rodar o comando "composer install" para baixar todas as dependências do projeto
+- Rodar o comando "php artisan migrate" para criar as tabelas do banco de dados
+- Importar a documentação contida em no diretório /docs do projeto no Insomnia REST Client
 
-## Official Documentation
+## Rotas da API
+- /citizens (GET) - Retorna todos os cidadãos. 
+O query param national_registry filtra um cidadão pelo seu CPF.
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+- /citizens/{ID} (GET) - Retorna os dados de um cidadão pelo seu ID.
 
-## Contributing
+- /citizens/{ID} (DELETE) - Exclui um cidadão pelo seu ID.
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- /citizens (POST) - Cadastra um cidadão com nome, sobrenome, cpf, email, celular, e CEP para buscar o endereço no VIACEP. 
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Comando para cadastrar um cidadão via linha de comando:
+citizen:create --name=Davillo --last_name=Aurélio --national_registry=26326216079 --email=davillo.dev@gmail.com --zip_code=63119300 --celphone=63119300

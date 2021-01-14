@@ -21,5 +21,8 @@ O query param national_registry filtra um cidadão pelo seu CPF.
 
 - /citizens (POST) - Cadastra um cidadão com nome, sobrenome, cpf, email, celular, e CEP para buscar o endereço no VIACEP. 
 
+##Testes
+Rode o comando ./vendor/bin/phpunit dentro do diretório do projeto para rodar os testes de integração da API
+
 Comando para cadastrar um cidadão via linha de comando:
 citizen:create --name=Davillo --last_name=Aurélio --national_registry=26326216079 --email=davillo.dev@gmail.com --zip_code=63119300 --celphone=63119300
